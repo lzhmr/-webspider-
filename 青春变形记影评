@@ -1,0 +1,22 @@
+'''豆瓣影评'''
+import requests
+from lxml import etree
+url='https://movie.douban.com/subject/35284253/reviews'
+headers={'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.xx'}
+resp=requests.get(url,headers=headers)
+et=etree.HTML(resp.text)
+divs=et.xpath('//div[@class="review-list  "]/div[1]')
+for div in divs:
+    title=div.xpath('./div/div/h2/a/text()')
+    time.sleep(1)
+    href=div.xpath('./div/div/h2/a/@href')
+    time.sleep(1)
+    title=''.join(title)
+    href=''.join(href)
+    first=requests.get(href,headers=headers)
+    et2=etree.HTML(first.text)
+    contentList=et2.xpath('//div[@class="review-content clearfix"]/p//text()')
+    contentList='\n'.join(contentList)
+    with open(f'/User/{title}.txt','a')as f:
+        f.write(contentList)
+resp.close()
