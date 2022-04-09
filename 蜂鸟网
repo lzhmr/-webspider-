@@ -1,0 +1,23 @@
+'''蜂鸟网'''
+from lxml import etree
+import requests
+# dumain='https://www.umeitu.com/bizhitupian'
+url='https://photo.fengniao.com/'
+resp=requests.get(url)
+et=etree.HTML(resp.text)
+imgList=et.xpath('//li[@class="noRight"]/a')
+count=1
+for imgs in imgList:
+    href=imgs.xpath('./@href')
+    href=''.join(href)
+    childUrl=f'https://photo.fengniao.com{href}'
+    urlresp=requests.get(childUrl)
+    et2=etree.HTML(urlresp.text)
+    downpic=et2.xpath('//div[@class="picHeader"]/a[2]/@href')
+    downpic=''.join(downpic)
+    imgResp=requests.get(downpic)
+    img=imgResp.content
+    with open(f'{count}.jpg','wb')as f:
+        f.write(img)
+    count+=1
+resp.close()
